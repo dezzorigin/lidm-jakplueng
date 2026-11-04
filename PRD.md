@@ -5,8 +5,7 @@
 | Field | Nilai |
 |---|---|
 | Nama Proyek | Lidm Jakplueng |
-| Repo | dezzorigin/lidm-jakplueng |
-| Tech Stack | Node.js (subproject) |
+| Tech Stack | Vite |
 | Status | Dalam pengembangan |
 | Penanggung Jawab | Nabil Aulia Dika |
 | Versi Dokumen | 1.0 |
@@ -14,7 +13,7 @@
 
 ## 2. Latar Belakang
 
-Proyek ini dikembangkan sebagai bagian dari portofolio dan kebutuhan operasional. Dokumen ini mengikuti standar PRD nasional untuk memastikan ruang lingkup, fitur, dan kriteria keberhasilan terdefinisi dengan jelas.
+Proyek ini dikembangkan sebagai bagian dari portofolio dan kebutuhan operasional. Dokumen ini mengikuti standar PRD nasional agar ruang lingkup, fitur, dan kriteria keberhasilan terdefinisi dengan jelas.
 
 ## 3. Masalah yang Diselesaikan
 
@@ -40,10 +39,11 @@ Pengguna membutuhkan solusi digital yang efisien, terukur, dan mudah dipelihara 
 ## 6. Fitur & Persyaratan Fungsional
 
 Struktur proyek (file/direktori utama):
-- .gitignore
 - JAKPLUENG - CODEBASE/
-- README.md
 - file/
+- LICENSE
+- PRD.md
+- README.md
 
 ## 7. Persyaratan Non-Fungsional
 
@@ -54,7 +54,7 @@ Struktur proyek (file/direktori utama):
 
 ## 8. Arsitektur & Tech Stack
 
-Node.js (subproject)
+Vite
 
 ## 9. Milestone / Roadmap
 
