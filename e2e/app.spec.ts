@@ -119,7 +119,7 @@ test.describe('alur siswa', () => {
     await expect(page.getByRole('heading', { name: 'Evakuasi Terstruktur — Latihan Bencana Jepang' })).toBeVisible();
     await page.goto('/tutorial');
     await expect(page.getByRole('heading', { name: /Tutorial Simulasi Evakuasi 3D/ })).toBeVisible();
-    await expect(page.getByRole('heading', { name: /Step by Step to Safety/ })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Step by Step to Safety', level: 1 })).toBeVisible();
     await page.goto('/vocabulary');
     await expect(page.getByRole('heading', { name: /Vocabulary Lab/ })).toBeVisible();
     await page.goto('/reflection');
