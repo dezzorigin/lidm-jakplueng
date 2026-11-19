@@ -1,9 +1,24 @@
+# JAK PLUENG! — dependencies & build output
+node_modules/
+dist/
+dist-ssr/
+build/
+
+# Env (jangan pernah commit file berisi secret)
 .env
 .env.*
-node_modules/
-.next/
-__pycache__/
-.venv/
-dist/
-build/
+!.env.example
+
+# Editor & OS
 .DS_Store
+*.local
+
+# Playwright / test artefacts (lokal saja; CI mengunggah artifact sendiri)
+test-results/
+playwright-report/
+playwright/.cache/
+demo/
+
+# Logs
+*.log
+npm-debug.log*
