@@ -62,7 +62,7 @@ test.describe('tur demo README', () => {
     await expect(page.getByRole('heading', { name: /Spin Wheel/ })).toBeVisible();
     await page.locator('textarea').fill('Ahmad\nBella\nChandra\nDewi\nEko\nFajar');
     await page.getByRole('button', { name: /Muat & Bagi Otomatis/ }).click();
-    await expect(page.getByText('Kelompok 1')).toBeVisible({ timeout: 20_000 });
+    await expect(page.locator('#main-content').getByText('Kelompok 1')).toBeVisible({ timeout: 20_000 });
     await page.waitForTimeout(2000);
     await page.screenshot({ path: 'demo/shot-teammaker.png' });
   });

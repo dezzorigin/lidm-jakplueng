@@ -80,11 +80,20 @@ test.describe('alur siswa', () => {
       'Next to the wall',
       'Move to higher ground immediately!',
     ];
+    // Penjelasan unik tiap soal (tidak muncul di teks soal — 'Go straight'
+    // saja juga ada di pertanyaan soal 2, jadi pakai kutipan penjelasannya).
+    const explanations = [
+      /take cover under a desk/,
+      /"Go straight" means/,
+      /clear, safe evacuation instruction/,
+      /"Beside" means/,
+      /Always move to higher ground/,
+    ];
     for (let i = 0; i < answers.length; i++) {
       await expect(page.getByText(`Soal ${i + 1} / 5`)).toBeVisible();
       await page.getByRole('button', { name: answers[i] }).click();
       // Penjelasan tampil setelah menjawab.
-      await expect(page.getByText(/Drop to the ground|Go straight|clear, safe evacuation|Beside|higher ground immediately/)).toBeVisible();
+      await expect(page.getByText(explanations[i])).toBeVisible();
       await page.getByRole('button', { name: i < 4 ? /Soal Berikutnya/ : /Lihat Hasil/ }).click();
     }
     // Hasil tampil walau penyimpanan Supabase gagal (fallback lokal).
@@ -97,14 +106,17 @@ test.describe('alur siswa', () => {
     await expect(page.getByRole('heading', { name: /Spin Wheel/ })).toBeVisible();
     await page.locator('textarea').fill('Ahmad\nBella\nChandra\nDewi\nEko\nFajar');
     await page.getByRole('button', { name: /Muat & Bagi Otomatis/ }).click();
-    await expect(page.getByText('Kelompok 1')).toBeVisible({ timeout: 20_000 });
+    // 'Kelompok 1' juga ada di strip sidebar — scope ke konten utama.
+    await expect(page.locator('#main-content').getByText('Kelompok 1')).toBeVisible({ timeout: 20_000 });
   });
 
   test('halaman modul: video, tutorial, vocab, refleksi tampil', async ({ page }) => {
     await enterAsStudent(page);
     await page.goto('/video');
-    await expect(page.getByText('Kepanikan Tsunami Aceh 2004')).toBeVisible();
-    await expect(page.getByText('Evakuasi Terstruktur')).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Kepanikan Tsunami Aceh 2004' })).toBeVisible();
+    // 'Evakuasi Terstruktur' (tanpa aksen) juga muncul di subjudul TopNav —
+    // pakai heading eksak kartu videonya.
+    await expect(page.getByRole('heading', { name: 'Evakuasi Terstruktur — Latihan Bencana Jepang' })).toBeVisible();
     await page.goto('/tutorial');
     await expect(page.getByRole('heading', { name: /Tutorial Simulasi Evakuasi 3D/ })).toBeVisible();
     await expect(page.getByRole('heading', { name: /Step by Step to Safety/ })).toBeVisible();
