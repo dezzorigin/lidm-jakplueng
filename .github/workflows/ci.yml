@@ -95,8 +95,11 @@ jobs:
         run: /tmp/gitleaks git --no-banner --config .gitleaks.toml
 
   # ── Playwright e2e (HANYA di CI) ──────────────────────────────────────
+  # Pin ubuntu-24.04: ubuntu-latest kini Ubuntu 26.04 dan Playwright
+  # 1.55.0 menolaknya ("Cannot install dependencies for ubuntu26.04-x64",
+  # run 44532750117). Job lain tetap di ubuntu-latest (sudah hijau).
   playwright-e2e:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
 
