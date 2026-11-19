@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<title>JAK PLUENG! — Diagram Arsitektur &amp; Alur</title>
+<style>
+  body { font-family: 'Nunito', system-ui, sans-serif; background: #FFFEF7; color: #1A1A2E; margin: 0; padding: 32px; }
+  h1 { font-weight: 900; font-size: 28px; }
+  h2 { font-weight: 900; font-size: 20px; margin-top: 40px; }
+  p { font-weight: 700; color: rgba(26,26,46,.65); max-width: 75ch; }
+  .card { border: 4px solid #1A1A2E; background: #fff; box-shadow: 6px 6px 0 #1A1A2E; padding: 16px; margin: 16px 0; overflow-x: auto; }
+  svg text { font-family: 'Nunito', system-ui, sans-serif; font-weight: 800; }
+  .box { fill: #fff; stroke: #1A1A2E; stroke-width: 3; }
+  .box-y { fill: #FFE135; stroke: #1A1A2E; stroke-width: 3; }
+  .box-c { fill: #FF6B6B; stroke: #1A1A2E; stroke-width: 3; }
+  .box-m { fill: #4ECDC4; stroke: #1A1A2E; stroke-width: 3; }
+  .box-s { fill: #74C0FC; stroke: #1A1A2E; stroke-width: 3; }
+  .box-d { fill: #1A1A2E; stroke: #1A1A2E; stroke-width: 3; }
+  .lbl { fill: #1A1A2E; font-size: 14px; }
+  .lbl-w { fill: #FFE135; font-size: 14px; }
+  .sub { fill: rgba(26,26,46,.6); font-size: 11px; font-weight: 700; }
+  .sub-w { fill: rgba(255,225,53,.65); font-size: 11px; font-weight: 700; }
+  .arrow { stroke: #1A1A2E; stroke-width: 3; fill: none; marker-end: url(#ah); }
+</style>
+</head>
+<body>
+<h1>JAK PLUENG! — Diagram</h1>
+<p>Arsitektur + alur guru/siswa. Gaya diagram mengikuti produk (border hitam tebal, blok warna datar, tanpa gradient). Dibuat sebagai HTML+SVG, bukan Mermaid.</p>
+
+<h2>1. Arsitektur sistem</h2>
+<div class="card">
+<svg width="980" height="360" viewBox="0 0 980 360" role="img" aria-label="Diagram arsitektur JAK PLUENG">
+  <defs><marker id="ah" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L9,3 L0,6 Z" fill="#1A1A2E"/></marker></defs>
+  <rect class="box-y" x="20" y="130" width="170" height="100" rx="0"/>
+  <text class="lbl" x="105" y="172" text-anchor="middle">SISWA / GURU</text>
+  <text class="sub" x="105" y="194" text-anchor="middle">browser · 1 sesi kelas</text>
+  <rect class="box" x="260" y="40" width="220" height="280" rx="0"/>
+  <text class="lbl" x="370" y="72" text-anchor="middle">VITE SPA (React 18)</text>
+  <text class="sub" x="370" y="94" text-anchor="middle">Cloudflare Pages · dist/</text>
+  <text class="lbl" x="280" y="130">· Router (13 rute)</text>
+  <text class="lbl" x="280" y="156">· Zustand + Context</text>
+  <text class="lbl" x="280" y="182">· Three.js simulator 3D</text>
+  <text class="lbl" x="280" y="208">· Tailwind neo-brutalist</text>
+  <text class="lbl" x="280" y="234">· docx / jspdf ekspor</text>
+  <text class="sub" x="280" y="268">tanpa backend pun jalan</text>
+  <text class="sub" x="280" y="286">(fallback lokal)</text>
+  <rect class="box-m" x="550" y="40" width="200" height="120" rx="0"/>
+  <text class="lbl" x="650" y="82" text-anchor="middle">SUPABASE</text>
+  <text class="sub" x="650" y="104" text-anchor="middle">Auth · Postgres · Realtime</text>
+  <text class="sub" x="650" y="122" text-anchor="middle">sessions · groups</text>
+  <text class="sub" x="650" y="140" text-anchor="middle">quiz_results · reflections</text>
+  <rect class="box-s" x="550" y="200" width="200" height="120" rx="0"/>
+  <text class="lbl" x="650" y="242" text-anchor="middle">MEDIA EKSTERNAL</text>
+  <text class="sub" x="650" y="264" text-anchor="middle">YouTube (3 video)</text>
+  <text class="sub" x="650" y="282" text-anchor="middle">Assemblr AR iframe</text>
+  <text class="sub" x="650" y="300" text-anchor="middle">Lagu (Storage proyek)</text>
+  <rect class="box-d" x="820" y="130" width="140" height="100" rx="0"/>
+  <text class="lbl-w" x="890" y="172" text-anchor="middle">GURU</text>
+  <text class="sub-w" x="890" y="194" text-anchor="middle">dashboard realtime</text>
+  <path class="arrow" d="M190 180 H255"/>
+  <path class="arrow" d="M480 110 H545"/>
+  <path class="arrow" d="M480 250 H545"/>
+  <path class="arrow" d="M750 100 C 790 100, 800 150, 818 170"/>
+</svg>
+</div>
+
+<h2>2. Alur siswa (tanpa akun)</h2>
+<div class="card">
+<svg width="980" height="150" viewBox="0 0 980 150" role="img" aria-label="Alur siswa">
+  <defs><marker id="ah2" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L9,3 L0,6 Z" fill="#1A1A2E"/></marker></defs>
+  <g>
+    <rect class="box-y" x="10" y="40" width="150" height="70"/><text class="lbl" x="85" y="70" text-anchor="middle">Sambutan</text><text class="sub" x="85" y="90" text-anchor="middle">pilih peran</text>
+    <rect class="box" x="200" y="40" width="150" height="70"/><text class="lbl" x="275" y="70" text-anchor="middle">Splash</text><text class="sub" x="275" y="90" text-anchor="middle">4,5 dtk / ketuk</text>
+    <rect class="box-c" x="390" y="40" width="150" height="70"/><text class="lbl" x="465" y="70" text-anchor="middle">Pilih Kelompok</text><text class="sub" x="465" y="90" text-anchor="middle">1–5 · fallback lokal</text>
+    <rect class="box-m" x="580" y="40" width="170" height="70"/><text class="lbl" x="665" y="70" text-anchor="middle">Modul (6 langkah)</text><text class="sub" x="665" y="90" text-anchor="middle">misi · video · 3D · kuis</text>
+    <rect class="box-s" x="790" y="40" width="150" height="70"/><text class="lbl" x="865" y="70" text-anchor="middle">Refleksi</text><text class="sub" x="865" y="90" text-anchor="middle">word cloud</text>
+    <path d="M160 75 H195" stroke="#1A1A2E" stroke-width="3" marker-end="url(#ah2)"/>
+    <path d="M350 75 H385" stroke="#1A1A2E" stroke-width="3" marker-end="url(#ah2)"/>
+    <path d="M540 75 H575" stroke="#1A1A2E" stroke-width="3" marker-end="url(#ah2)"/>
+    <path d="M750 75 H785" stroke="#1A1A2E" stroke-width="3" marker-end="url(#ah2)"/>
+  </g>
+</svg>
+</div>
+
+<h2>3. Alur guru (login Supabase)</h2>
+<div class="card">
+<svg width="980" height="150" viewBox="0 0 980 150" role="img" aria-label="Alur guru">
+  <defs><marker id="ah3" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L9,3 L0,6 Z" fill="#1A1A2E"/></marker></defs>
+  <g>
+    <rect class="box-y" x="10" y="40" width="150" height="70"/><text class="lbl" x="85" y="70" text-anchor="middle">Login Guru</text><text class="sub" x="85" y="90" text-anchor="middle">Supabase Auth</text>
+    <rect class="box" x="200" y="40" width="170" height="70"/><text class="lbl" x="285" y="70" text-anchor="middle">Dashboard Guru</text><text class="sub" x="285" y="90" text-anchor="middle">realtime · sesi aktif</text>
+    <rect class="box-c" x="410" y="40" width="150" height="70"/><text class="lbl" x="485" y="70" text-anchor="middle">Spin Wheel</text><text class="sub" x="485" y="90" text-anchor="middle">bagi + kunci grup</text>
+    <rect class="box-m" x="600" y="40" width="170" height="70"/><text class="lbl" x="685" y="70" text-anchor="middle">Pantau Live</text><text class="sub" x="685" y="90" text-anchor="middle">hadir · skor · kata</text>
+    <rect class="box-s" x="810" y="40" width="130" height="70"/><text class="lbl" x="875" y="70" text-anchor="middle">Ekspor</text><text class="sub" x="875" y="90" text-anchor="middle">docx / pdf</text>
+    <path d="M160 75 H195" stroke="#1A1A2E" stroke-width="3" marker-end="url(#ah3)"/>
+    <path d="M370 75 H405" stroke="#1A1A2E" stroke-width="3" marker-end="url(#ah3)"/>
+    <path d="M560 75 H595" stroke="#1A1A2E" stroke-width="3" marker-end="url(#ah3)"/>
+    <path d="M770 75 H805" stroke="#1A1A2E" stroke-width="3" marker-end="url(#ah3)"/>
+  </g>
+</svg>
+</div>
+</body>
+</html>

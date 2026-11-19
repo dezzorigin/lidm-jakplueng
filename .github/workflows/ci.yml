@@ -1,0 +1,186 @@
+name: CI
+
+# CI untuk lidm-jakplueng (repo #59 — Vite React 18 + Tailwind v3 +
+# React Three Fiber; portal microteaching LIDM 2025 JAK PLUENG!).
+# Job: build (typecheck + vite build), static-checks (gate P0 + tag OG),
+# advisory-sweep OSV (produksi saja), gitleaks (riwayat penuh),
+# playwright-e2e (app + tur demo README, desktop + Pixel 7),
+# smoke (build persis yang di-deploy ke Cloudflare Pages).
+# Node 24 (engines.node >= 20 dikunci di package.json).
+# JANGAN `npx playwright install` di VM dev — hanya di CI.
+# JANGAN pakai `| tee` tanpa pipefail di step CI (pelajaran #44: tee
+# menutupi exit code gagal jadi tampak hijau).
+# JANGAN pakai `npm audit` sebagai gate (advisory dev-only ikut
+# dilaporkan; gerbangnya advisory-sweep OSV atas dependensi produksi).
+#
+# CATATAN LOCKFILE: repo ini PUNYA package-lock.json (Vite era 2026).
+# CI memakai `npm ci` + `cache: npm`. @playwright/test TIDAK ada di
+# package.json (sengaja — menambahkannya akan membuat lockfile tidak
+# sinkron); job playwright-e2e memasangnya `--no-save` (hanya
+# node_modules, tanpa mengubah package.json/lockfile).
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  # ── Build + typecheck ──────────────────────────────────────────────────
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Build (Vite)
+        run: npm run build
+
+  # ── Pemeriksaan statis: gate P0 + tag OG ─────────────────────────────
+  static-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+
+      - name: Gate P0 + tag OG/Twitter + favicon + SPA fallback
+        run: npm run validate
+
+  # ── Advisory sweep (OSV batch, tanpa auth) ────────────────────────────
+  # Pola repo #24–#53: 1 POST ke api.osv.dev/v1/querybatch untuk semua
+  # paket produksi (dev: true di package-lock.json dilewati).
+  # JANGAN ganti ke GitHub Advisory DB API + GITHUB_TOKEN
+  # (gagal deterministik 401 di CI orteam — token per-job bermasalah).
+  advisory-sweep:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: OSV sweep (produksi saja, HIGH/CRITICAL = gagal)
+        run: python3 scripts/advisory-sweep.py
+
+  # ── Gitleaks: secret scan riwayat penuh ───────────────────────────────
+  gitleaks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install gitleaks 8.28.0
+        run: |
+          curl -sL -o /tmp/gitleaks.tar.gz https://github.com/gitleaks/gitleaks/releases/download/v8.28.0/gitleaks_8.28.0_linux_x64.tar.gz
+          tar -xzf /tmp/gitleaks.tar.gz -C /tmp gitleaks
+
+      - name: Gitleaks (riwayat penuh, config repo)
+        run: /tmp/gitleaks git --no-banner --config .gitleaks.toml
+
+  # ── Playwright e2e (HANYA di CI) ──────────────────────────────────────
+  playwright-e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright (hanya node_modules, tanpa lockfile)
+        run: npm install --no-save @playwright/test@1.55.0
+
+      # Ulangi sampai 3x: unduh apt font di runner GitHub sering gagal
+      # sesaat (pola #52). Bukan kegagalan tes.
+      - name: Install Playwright browsers
+        run: |
+          set -e
+          for i in 1 2 3; do
+            if npx playwright install --with-deps chromium; then
+              echo "playwright browsers terpasang (percobaan $i)"
+              exit 0
+            fi
+            echo "percobaan $i gagal; ulang dalam 30 detik..."
+            sleep 30
+          done
+          echo "FAIL: playwright install gagal 3x"
+          exit 1
+
+      - name: E2E produk (desktop + Pixel 7 + tur demo)
+        run: npx playwright test
+
+      # Tur demo README (gate merge): rakit video webm tur "demo" jadi
+      # demo/demo.mp4 (H.264 — GitHub memotong tag <video>, README memakai
+      # thumbnail yang link ke mp4), lalu unggah demo/ sebagai artifact.
+      # ffmpeg TIDAK ada di runner — pakai ffmpeg-static dari npm untuk
+      # gabung video (pelajaran #52); video Playwright sudah 1280x720
+      # (viewport eksplisit di e2e/demo.spec.ts).
+      - name: Rakit video demo (webm -> mp4)
+        if: always()
+        run: |
+          set -euo pipefail
+          VIDEO=$(find test-results -name 'video.webm' | head -n 1)
+          test -n "$VIDEO" || { echo "FAIL: video.webm tidak ditemukan"; find test-results -type f | head -20; exit 1; }
+          echo "video: $VIDEO ($(stat -c%s "$VIDEO") byte)"
+          if command -v ffmpeg >/dev/null 2>&1; then
+            FF=ffmpeg
+          else
+            npm install --no-save ffmpeg-static >/dev/null 2>&1
+            FF=$(node -e "console.log(require('ffmpeg-static'))")
+          fi
+          echo "ffmpeg: $FF"
+          "$FF" -y -loglevel error -i "$VIDEO" -c:v libx264 -pix_fmt yuv420p demo/demo.mp4
+          test -s demo/demo.mp4 || { echo "FAIL: demo.mp4 kosong"; exit 1; }
+          "$FF" -hide_banner -i demo/demo.mp4 2>&1 | head -20 || true
+          ls -la demo/
+
+      - name: Unggah demo README (screenshot + mp4)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: readme-demo
+          path: demo/
+          if-no-files-found: error
+
+  # ── Smoke folder dist/ ────────────────────────────────────────────────
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build produksi
+        run: npm run build
+
+      - name: Smoke dist/ (persis yang di-deploy)
+        run: npm run smoke

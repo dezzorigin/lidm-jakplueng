@@ -1,0 +1,10 @@
+# Gitleaks — konfigurasi repo lidm-jakplueng.
+#
+# Repo ini tidak menyimpan kredensial apa pun: kredensial Supabase hanya
+# lewat env (lihat .env.example — isinya placeholder). Scan riwayat penuh
+# (gitleaks 8.28.0) tidak menemukan temuan — file ini ada supaya job CI
+# memakai config repo secara eksplisit. Kalau suatu hari ada temuan secret
+# sungguhan, penanganannya adalah lapor ke koordinator, BUKAN tambah
+# allowlist.
+[extend]
+useDefault = true
