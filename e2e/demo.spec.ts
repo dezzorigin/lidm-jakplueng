@@ -3,14 +3,17 @@ import { test, expect } from '@playwright/test';
 // Tur demo README (gate merge): merekam video + screenshot asli aplikasi.
 // Hanya proyek desktop — video 1280x720 (viewport eksplisit; default
 // Playwright 800x500). Mobile tidak merekam tur ini.
+// test.use WAJIB top-level file (di dalam describe, Playwright menolak
+// `video` karena memaksa worker baru — run 44534063901).
 // Tirai (curtain) menutup layar ±1,9 detik tiap navigasi: screenshot
 // diambil SETELAH heading tampil + jeda 2 detik supaya tirai benar-benar
 // terbuka (pelajaran #52).
 // File: demo/shot-*.png + video.webm (di test-results, dirakit CI jadi
 // demo/demo.mp4 dengan ffmpeg-static).
+test.use({ viewport: { width: 1280, height: 720 }, video: 'on' });
+
 test.describe('tur demo README', () => {
   test.skip(({ isMobile }) => isMobile, 'tur demo hanya desktop');
-  test.use({ viewport: { width: 1280, height: 720 }, video: 'on' });
 
   test('sambutan → siswa → misi → simulator → kuis → team maker', async ({ page }) => {
     // 1. Sambutan
