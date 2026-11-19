@@ -121,9 +121,10 @@ test.describe('alur siswa', () => {
     await expect(page.getByRole('heading', { name: /Tutorial Simulasi Evakuasi 3D/ })).toBeVisible();
     await expect(page.getByRole('heading', { name: 'Step by Step to Safety', level: 1 })).toBeVisible();
     await page.goto('/vocabulary');
-    await expect(page.getByRole('heading', { name: /Vocabulary Lab/ })).toBeVisible();
+    // TopNav juga punya h1 'Vocabulary Lab' — pakai h1 halaman (emoji 📚).
+    await expect(page.getByRole('heading', { name: '📚 Vocabulary Lab', exact: true })).toBeVisible();
     await page.goto('/reflection');
-    await expect(page.getByRole('heading', { name: /Apa pelajaran yang kamu dapat hari ini/ })).toBeVisible();
+    await expect(page.locator('#main-content').getByRole('heading', { name: /Apa pelajaran yang kamu dapat hari ini/ })).toBeVisible();
   });
 
   test('rute tidak dikenal → 404', async ({ page }) => {
