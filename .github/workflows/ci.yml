@@ -46,6 +46,15 @@ jobs:
       - name: Build (Vite)
         run: npm run build
 
+      # dist/ dipakai deploy Cloudflare Pages dari VM (pola #50: unduh
+      # artifact, bukan build lokal — npm install lokal dilarang).
+      - name: Unggah dist/ untuk deploy
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+          if-no-files-found: error
+
   # ── Pemeriksaan statis: gate P0 + tag OG ─────────────────────────────
   static-checks:
     runs-on: ubuntu-latest
