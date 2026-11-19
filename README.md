@@ -14,7 +14,7 @@ refleksi word cloud.
 ![Simulator evakuasi 3D](docs/screenshots/simulator-desktop.png)
 ![Kuis evaluasi](docs/screenshots/quiz-desktop.png)
 
-Video demo (2 menit, tur lengkap — klik thumbnail):
+Video demo (33 detik, tur lengkap — klik thumbnail):
 
 [![Demo JAK PLUENG!](docs/demo/cover.png)](docs/demo/demo.mp4)
 
